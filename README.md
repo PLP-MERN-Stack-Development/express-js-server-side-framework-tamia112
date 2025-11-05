@@ -1,62 +1,194 @@
-# Express.js RESTful API Assignment
+# 🛒 Express.js Product API
 
-This assignment focuses on building a RESTful API using Express.js, implementing proper routing, middleware, and error handling.
+A RESTful API built with **Express.js** for managing product data.  
+This project implements routing, middleware, authentication, validation, and error handling as part of the Week 2 assignment.
 
-## Assignment Overview
+---
 
-You will:
-1. Set up an Express.js server
-2. Create RESTful API routes for a product resource
-3. Implement custom middleware for logging, authentication, and validation
-4. Add comprehensive error handling
-5. Develop advanced features like filtering, pagination, and search
+## 🚀 Features
 
-## Getting Started
+- RESTful CRUD API for products
+- Custom middleware:
+  - Logger (logs method, URL, and timestamp)
+  - Authentication (API key required)
+  - Validation (checks product data)
+- Global error handling
+- Filtering, pagination, and search
+- Product statistics (count by category)
+- Environment variables with `.env`
 
-1. Accept the GitHub Classroom assignment invitation
-2. Clone your personal repository that was created by GitHub Classroom
-3. Install dependencies:
-   ```
-   npm install
-   ```
-4. Run the server:
-   ```
-   npm start
-   ```
+---
 
-## Files Included
+## ⚙️ Installation & Setup
 
-- `Week2-Assignment.md`: Detailed assignment instructions
-- `server.js`: Starter Express.js server file
-- `.env.example`: Example environment variables file
+### 1️⃣ Clone the repository
+```bash
+git clone <your-github-repo-url>
+cd <repo-folder>
+```
 
-## Requirements
+### 2️⃣ Install dependencies
+```bash
+npm install
+```
 
-- Node.js (v18 or higher)
-- npm or yarn
-- Postman, Insomnia, or curl for API testing
+### 3️⃣ Create `.env` file
+```bash
+API_KEY=supersecretkey123
+PORT=3000
+```
 
-## API Endpoints
+### 4️⃣ Run the server
+```bash
+npm start
+```
 
-The API will have the following endpoints:
+Server will start on:
+```
+http://localhost:3000
+```
 
-- `GET /api/products`: Get all products
-- `GET /api/products/:id`: Get a specific product
-- `POST /api/products`: Create a new product
-- `PUT /api/products/:id`: Update a product
-- `DELETE /api/products/:id`: Delete a product
+---
 
-## Submission
+## 📡 API Endpoints
 
-Your work will be automatically submitted when you push to your GitHub Classroom repository. Make sure to:
+| Method | Endpoint | Description | Auth Required |
+|--------|-----------|-------------|---------------|
+| GET | `/api/products` | Get all products (supports filtering, pagination, search) | ❌ |
+| GET | `/api/products/:id` | Get a specific product by ID | ❌ |
+| POST | `/api/products` | Create a new product | ✅ |
+| PUT | `/api/products/:id` | Update a product | ✅ |
+| DELETE | `/api/products/:id` | Delete a product | ✅ |
+| GET | `/api/products/stats` | Get product statistics | ❌ |
 
-1. Complete all the required API endpoints
-2. Implement the middleware and error handling
-3. Document your API in the README.md
-4. Include examples of requests and responses
+---
 
-## Resources
+## 🔍 Query Parameters (for GET `/api/products`)
 
-- [Express.js Documentation](https://expressjs.com/)
-- [RESTful API Design Best Practices](https://restfulapi.net/)
-- [HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) 
+| Parameter | Description | Example |
+|------------|--------------|----------|
+| `category` | Filter products by category | `/api/products?category=electronics` |
+| `search` | Search by name or description | `/api/products?search=coffee` |
+| `page` | Page number for pagination | `/api/products?page=2` |
+| `limit` | Number of results per page | `/api/products?limit=5` |
+
+---
+
+## 🧪 Example Requests & Responses
+
+### ✅ GET All Products
+**Request:**
+```bash
+GET /api/products
+```
+
+**Response:**
+```json
+{
+  "total": 3,
+  "page": 1,
+  "limit": 10,
+  "data": [
+    {
+      "id": "1",
+      "name": "Laptop",
+      "description": "16GB RAM",
+      "price": 1200,
+      "category": "electronics",
+      "inStock": true
+    }
+  ]
+}
+```
+
+---
+
+### ✅ POST Create Product
+**Request:**
+```bash
+curl -X POST http://localhost:3000/api/products   -H "Content-Type: application/json"   -H "x-api-key: supersecretkey123"   -d '{"name":"Headphones","description":"Noise cancelling","price":150,"category":"electronics","inStock":true}'
+```
+
+**Response:**
+```json
+{
+  "id": "cfa12f3b-80c7-4f0c-8b26-f77a3a988bb4",
+  "name": "Headphones",
+  "description": "Noise cancelling",
+  "price": 150,
+  "category": "electronics",
+  "inStock": true
+}
+```
+
+---
+
+### ⚠️ Example Error (Invalid API key)
+**Request:**
+```bash
+curl -X POST http://localhost:3000/api/products   -H "Content-Type: application/json"   -H "x-api-key: wrongkey"   -d '{"name":"TV","price":600,"category":"electronics","inStock":true}'
+```
+
+**Response:**
+```json
+{
+  "error": "UnauthorizedError",
+  "message": "Invalid or missing API key"
+}
+```
+
+---
+
+## 🧰 Middleware Summary
+
+| Middleware | File | Purpose |
+|-------------|------|----------|
+| Logger | `middleware/logger.js` | Logs method, URL, and timestamp |
+| Authentication | `middleware/auth.js` | Checks API key |
+| Validation | `middleware/validateProduct.js` | Validates product data |
+| Error Handler | `middleware/errorHandler.js` | Handles all errors globally |
+
+---
+
+## 🧠 Environment Variables
+
+| Variable | Description | Example |
+|-----------|--------------|----------|
+| `PORT` | Port number | 3000 |
+| `API_KEY` | Required key for protected routes | supersecretkey123 |
+
+---
+
+## 👩🏽‍💻 Example Test with Postman
+
+**Headers:**
+| Key | Value |
+|-----|--------|
+| Content-Type | application/json |
+| x-api-key | supersecretkey123 |
+
+**Body (JSON):**
+```json
+{
+  "name": "Toaster",
+  "description": "2-slice toaster",
+  "price": 40,
+  "category": "kitchen",
+  "inStock": true
+}
+```
+
+---
+
+## 🏁 Submission Notes
+
+- All endpoints have been implemented and tested.
+- Middleware and error handling meet assignment requirements.
+- `.env.example` included for environment configuration.
+
+---
+
+## 👤 Author
+**Name:** Tamia Mwandu  
+**Course:** PLP — Express.js Week 2 Assignment  
+
